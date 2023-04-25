@@ -5,6 +5,36 @@ namespace CombatDicesTeam.Graphs.Visualization;
 [PublicAPI]
 public sealed class HorizontalGraphVisualizer<TValueData> : IGraphNodeVisualizer<TValueData>
 {
+    private static IReadOnlyCollection<IGraphNode<TValueData>> GetNextLevelNodes(IGraph<TValueData> graph,
+        IReadOnlyCollection<IGraphNode<TValueData>> roots)
+    {
+        return roots.Select(graph.GetNext).SelectMany(x => x).Distinct().ToArray();
+    }
+
+    private static IReadOnlyCollection<IGraphNode<TValueData>> GetRoots(IGraph<TValueData> campaignGraph)
+    {
+        // Look node are not targets for other nodes.
+
+        var nodesOpenList = campaignGraph.GetAllNodes().ToList();
+
+        foreach (var node in nodesOpenList.ToArray())
+        {
+            var otherNodes = campaignGraph.GetAllNodes().Where(x => x != node).ToArray();
+
+            foreach (var otherNode in otherNodes)
+            {
+                var nextNodes = campaignGraph.GetNext(otherNode);
+
+                if (nextNodes.Contains(node))
+                {
+                    nodesOpenList.Remove(node);
+                }
+            }
+        }
+
+        return nodesOpenList;
+    }
+
     public IReadOnlyCollection<IGraphNodeLayout<TValueData>> Create(IGraph<TValueData> graph, ILayoutConfig config)
     {
         var roots = GetRoots(graph);
@@ -14,7 +44,7 @@ public sealed class HorizontalGraphVisualizer<TValueData> : IGraphNodeVisualizer
             roots
         };
 
-        IReadOnlyCollection<IGraphNode<TValueData>> currentList = roots;
+        var currentList = roots;
         while (true)
         {
             var openListNextLevel = GetNextLevelNodes(graph, currentList);
@@ -47,35 +77,5 @@ public sealed class HorizontalGraphVisualizer<TValueData> : IGraphNodeVisualizer
         }
 
         return controls;
-    }
-
-    private static IReadOnlyCollection<IGraphNode<TValueData>> GetNextLevelNodes(IGraph<TValueData> graph,
-        IReadOnlyCollection<IGraphNode<TValueData>> roots)
-    {
-        return roots.Select(graph.GetNext).SelectMany(x => x).Distinct().ToArray();
-    }
-
-    private static IReadOnlyCollection<IGraphNode<TValueData>> GetRoots(IGraph<TValueData> campaignGraph)
-    {
-        // Look node are not targets for other nodes.
-
-        var nodesOpenList = campaignGraph.GetAllNodes().ToList();
-
-        foreach (var node in nodesOpenList.ToArray())
-        {
-            var otherNodes = campaignGraph.GetAllNodes().Where(x => x != node).ToArray();
-
-            foreach (var otherNode in otherNodes)
-            {
-                var nextNodes = campaignGraph.GetNext(otherNode);
-
-                if (nextNodes.Contains(node))
-                {
-                    nodesOpenList.Remove(node);
-                }
-            }
-        }
-
-        return nodesOpenList;
     }
 }
