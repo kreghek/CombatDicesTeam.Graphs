@@ -4,14 +4,57 @@
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+
+        <EnablePackageValidation>true</EnablePackageValidation>
+
+        <!-- Optional: Detect breaking changes from a previous version -->
+        <!-- <PackageValidationBaselineVersion>1.0.0</PackageValidationBaselineVersion> -->
+
+        <GenerateDocumentationFile>True</GenerateDocumentationFile>
+
+        <!-- If all members are not documented, you can disable the compiler warnings -->
+        <NoWarn>$(NoWarn);CS1591</NoWarn>
+
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+
+        <PackageIcon>icon.png</PackageIcon>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <Authors>Pavel Kurkutov</Authors>
+        <Description>Lightweight library to visualize graphs.</Description>
+
+        <!-- PackageProjectUrl is different from the repository URL. It can be a documentation
+             website or a website explaining the project -->
+        <PackageProjectUrl>https://github.com/kreghek/CombatDicesTeam.Graphs</PackageProjectUrl>
+
+        <!-- A list of tags to help the search engine to understand the content of the package -->
+        <PackageTags>library</PackageTags>
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\CombatDicesTeam.Graphs\CombatDicesTeam.Graphs.csproj" />
+        <PackageReference Include="DotNet.ReproducibleBuilds" Version="1.1.1">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+        </PackageReference>
+        
+        <PackageReference Include="JetBrains.Annotations" Version="2022.1.0" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="JetBrains.Annotations" Version="2022.1.0" />
+        <ProjectReference Include="..\CombatDicesTeam.Graphs\CombatDicesTeam.Graphs.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <!--
+            Add an icon.png next to the csproj:
+            - Supported format: png, jpg
+            - Recommended dimensions: 128x128
+            - Maximum size: 1MB
+        -->
+        <None Include="icon.png" Pack="true" PackagePath="" />
+        <None Include="README.md" Pack="true" PackagePath=""/>
     </ItemGroup>
 
 </Project>
