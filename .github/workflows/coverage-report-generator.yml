@@ -77,6 +77,6 @@ jobs:
           DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
           DOTNET_CLI_TELEMETRY_OUTPUT: 1
         run: |
-          cd ./Zilon.Core
+          cd ./tests
           dotnet test ${{ matrix.test_suite }}.sln --configuration Debug
       
