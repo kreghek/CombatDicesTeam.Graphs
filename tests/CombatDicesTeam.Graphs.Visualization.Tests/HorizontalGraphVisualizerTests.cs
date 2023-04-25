@@ -1,6 +1,6 @@
 namespace CombatDicesTeam.Graphs.Visualization.Tests;
 
-public class HorizontalGraphVisualizerTests
+public sealed class HorizontalGraphVisualizerTests
 {
     private const int NODE_SIZE = 1;
     private readonly ILayoutConfig _layoutConfig = Mock.Of<ILayoutConfig>(x => x.NodeSize == NODE_SIZE);
