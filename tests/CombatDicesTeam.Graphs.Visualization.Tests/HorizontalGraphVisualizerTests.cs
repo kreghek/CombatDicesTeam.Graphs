@@ -217,13 +217,13 @@ public sealed class HorizontalGraphVisualizerTests
         positions.Should().BeEquivalentTo(expectedPositions);
     }
 
-    private static Graph<object> CreateLineGraph(int LINE_COUNT)
+    private static Graph<object> CreateLineGraph(int lineCount)
     {
         var graph = new Graph<object>();
 
         GraphNode<object>? prevNode = null;
 
-        for (var i = 0; i < LINE_COUNT; i++)
+        for (var i = 0; i < lineCount; i++)
         {
             var graphNode = new GraphNode<object>(i);
             graph.AddNode(graphNode);

@@ -1,9 +1,12 @@
+using JetBrains.Annotations;
+
 namespace CombatDicesTeam.Graphs.Visualization;
 
 /// <summary>
 /// Visualizer to create node layouts.
 /// </summary>
 /// <typeparam name="TNodePayload">Type of node's payload.</typeparam>
+[PublicAPI]
 public interface IGraphNodeVisualizer<TNodePayload>
 {
     /// <summary>

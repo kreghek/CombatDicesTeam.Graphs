@@ -4,7 +4,7 @@
 /// Layout of graph node.
 /// </summary>
 /// <typeparam name="TNodePayload">Type of node's data.</typeparam>
-public interface IGraphNodeLayout<TNodePayload>
+public interface IGraphNodeLayout<out TNodePayload>
 {
     /// <summary>
     /// Node which visualized.
