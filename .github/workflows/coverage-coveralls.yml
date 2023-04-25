@@ -1,0 +1,60 @@
+name: Test and Coveralls report
+
+on:
+  pull_request:
+    branches:
+      - master
+    tags:
+      - 'v*.*.*'
+  push:
+    branches:
+      - master
+    tags:
+      - 'v*.*.*'
+
+env:
+  TEST_RESULT_PATH: /home/runner/work/CombatDicesTeam.Graphs/CombatDicesTeam.Graphs/TestResults/
+
+jobs:
+
+  test_release:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        test_suite:
+          - CombatDicesTeam.Graphs.Tests
+          - CombatDicesTeam.Graphs.Visualization.Tests
+
+    steps:
+      - uses: actions/checkout@v3
+
+      # Install the .NET SDK indicated in the global.json file
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+
+      - name: Run ${{ matrix.test_suite }} in Release and collect coverage
+        env:
+          DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+          DOTNET_CLI_TELEMETRY_OUTPUT: 1
+        run: |
+          cd ./tests
+          dotnet test ${{ matrix.test_suite }}.sln --configuration Release /p:CollectCoverage=true /p:CoverletOutput=${{env.TEST_RESULT_PATH}} /p:CoverletOutputFormat=\"lcov,json\" /p:MergeWith="${{env.TEST_RESULT_PATH}}coverage.json" /p:SkipAutoProps=true /p:ExcludeByAttribute=\"Obsolete,GeneratedCode,CompilerGenerated\" /maxcpucount:1
+      
+      - name: Publish coverage report to coveralls.io
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path-to-lcov: ${{env.TEST_RESULT_PATH}}coverage.info
+          parallel: true
+          flag-name: ${{ matrix.test_suite }}
+  
+  finish:
+    needs: test_release
+    runs-on: ubuntu-latest
+    steps:
+    - name: Coveralls Finished
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        parallel-finished: true
