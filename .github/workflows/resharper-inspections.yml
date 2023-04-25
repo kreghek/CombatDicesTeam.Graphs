@@ -1,0 +1,81 @@
+name: Resharper Code Inspections
+
+on:
+  pull_request:
+    branches:
+      - main
+      - 'demo/**'
+      - 'dev/**'
+
+env:
+  MGFXC_WINE_PATH: /home/runner/.winemonogame
+
+jobs:
+
+  # Set the job key. The key is displayed as the job name
+  # when a job name is not provided
+  resharper-inspections:
+    # Name the Job
+    name: Inspect C# via R# CLT
+    # Set the type of machine to run on
+    runs-on: ubuntu-latest
+    env:
+      working-directory : ./Rpg.Client/
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup .NET 6
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '6.0.x'
+
+      - name: Setup Wine
+        run: |
+          sudo apt update
+          sudo apt install wine64 p7zip-full
+          wget -qO- https://raw.githubusercontent.com/MonoGame/MonoGame/master/Tools/MonoGame.Effect.Compiler/mgfxc_wine_setup.sh | sh
+          cd ~/.winemonogame/drive_c/windows/system32
+         
+          DOTNET_URL="https://download.visualstudio.microsoft.com/download/pr/44d08222-aaa9-4d35-b24b-d0db03432ab7/52a4eb5922afd19e8e0d03e0dbbb41a0/dotnet-sdk-6.0.302-win-x64.zip"
+          curl "https://download.visualstudio.microsoft.com/download/pr/44d08222-aaa9-4d35-b24b-d0db03432ab7/52a4eb5922afd19e8e0d03e0dbbb41a0/dotnet-sdk-6.0.302-win-x64.zip" --output "dotnet-sdk.zip"
+         
+          7z x "dotnet-sdk.zip" -y
+         
+          rm dotnet-sdk.zip
+
+      - name: Restore dependencies
+        run: dotnet restore Rpg.Client/Rpg.Client.sln
+
+      - name: Build extentions
+        run: dotnet build Rpg/GameContent.Extensions/GameContent.Extensions.csproj --configuration Release
+
+      # Building of the project is important step to resolve bin dependensies.
+      # See docs https://www.jetbrains.com/help/resharper/CleanupCode.html#9663f16d
+      - name: Build
+        run: dotnet build Rpg.Client/Rpg.Client.sln --verbosity normal
+
+      - name: Setup ReSharper Command Line Tools
+        run: dotnet tool install --global JetBrains.ReSharper.GlobalTools --version 2022.3.2
+
+      - name: Inspect code base
+        id: inspection
+        run: |
+          touch ./inspection_report.txt
+          jb inspectcode Rpg.Client.sln --build --format=Text --output=./inspection_report.txt
+          echo " cyber-goblin-marker" >> ./inspection_report.txt
+          REPORT=$(cat "./inspection_report.txt")
+          echo $REPORT
+        working-directory: ${{env.working-directory}}
+        
+      - name: Find Comment of goblin
+        uses: peter-evans/find-comment@v2
+        id: fc
+        with:
+          issue-number: 1
+          body-includes: cyber-goblin-marker
+        
+      - uses: mshick/add-pr-comment@v2
+        with:
+          message-id: ${{ steps.fc.outputs.comment-id }}
+          message-path: /home/runner/work/ewar/ewar/Rpg.Client/inspection_report.txt

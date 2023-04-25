@@ -1,0 +1,17 @@
+{
+  "stryker-config": {
+    "mutation-level": "Basic",
+    "ignore-methods": [
+      "*Log",
+      "Console.Write*",
+      "*Exception.ctor",
+      "ToString",
+      "ConfigureAwait"
+    ],
+    "ignore-mutations": [
+      "string",
+      "linq.First",
+      "linq.Sum"
+    ]
+  }
+}
