@@ -2,6 +2,9 @@
 
 public class GraphTests
 {
+    /// <summary>
+    /// Test checks a root returns related node as next. 
+    /// </summary>
     [Test]
     public void GetNext_SimplestGraph_ReturnsSingleOtherNode()
     {
@@ -25,8 +28,11 @@ public class GraphTests
         rootNext.Should().HaveCount(1).And.Subject.Should().Satisfy(x => x == graphNodeNext);
     }
     
+    /// <summary>
+    /// Test checks a node from middle of linear graph returns related node from the end as next. 
+    /// </summary>
     [Test]
-    public void GetNext_LinearGraph9_ReturnsSingleNodeFromRoot()
+    public void GetNext_LinearGraph3_ReturnsSingleNodeFromRoot()
     {
         // ARRANGE
         

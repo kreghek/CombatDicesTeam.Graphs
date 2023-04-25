@@ -2,40 +2,48 @@ using JetBrains.Annotations;
 
 namespace CombatDicesTeam.Graphs;
 
+/// <summary>
+/// Base implementation of the graph.
+/// </summary>
+/// <typeparam name="TNodePayload"></typeparam>
 [PublicAPI]
-public sealed class Graph<TValueData>: IGraph<TValueData>
+public sealed class Graph<TNodePayload>: IGraph<TNodePayload>
 {
-    private readonly IDictionary<IGraphNode<TValueData>, IList<IGraphNode<TValueData>>> _dict;
+    private readonly IDictionary<IGraphNode<TNodePayload>, IList<IGraphNode<TNodePayload>>> _nodeRelations;
 
     public Graph()
     {
-        _dict = new Dictionary<IGraphNode<TValueData>, IList<IGraphNode<TValueData>>>();
+        _nodeRelations = new Dictionary<IGraphNode<TNodePayload>, IList<IGraphNode<TNodePayload>>>();
     }
 
-    public void AddNode(IGraphNode<TValueData> node)
+    /// <inheritdoc />
+    public void AddNode(IGraphNode<TNodePayload> node)
     {
-        var next = new List<IGraphNode<TValueData>>();
-        _dict[node] = next;
+        var next = new List<IGraphNode<TNodePayload>>();
+        _nodeRelations[node] = next;
     }
 
-    public void ConnectNodes(IGraphNode<TValueData> sourceNode, IGraphNode<TValueData> targetNode)
+    /// <inheritdoc />
+    public void ConnectNodes(IGraphNode<TNodePayload> sourceNode, IGraphNode<TNodePayload> targetNode)
     {
-        if (!_dict.TryGetValue(sourceNode, out var next))
+        if (!_nodeRelations.TryGetValue(sourceNode, out var next))
         {
-            next = new List<IGraphNode<TValueData>>();
-            _dict[sourceNode] = next;
+            next = new List<IGraphNode<TNodePayload>>();
+            _nodeRelations[sourceNode] = next;
         }
         
         next.Add(targetNode);
     }
 
-    public IReadOnlyCollection<IGraphNode<TValueData>> GetAllNodes()
+    /// <inheritdoc />
+    public IReadOnlyCollection<IGraphNode<TNodePayload>> GetAllNodes()
     {
-        return _dict.Keys.ToArray();
+        return _nodeRelations.Keys.ToArray();
     }
 
-    public IReadOnlyCollection<IGraphNode<TValueData>> GetNext(IGraphNode<TValueData> node)
+    /// <inheritdoc />
+    public IReadOnlyCollection<IGraphNode<TNodePayload>> GetNext(IGraphNode<TNodePayload> node)
     {
-        return _dict[node].ToArray();
+        return _nodeRelations[node].ToArray();
     }
 }

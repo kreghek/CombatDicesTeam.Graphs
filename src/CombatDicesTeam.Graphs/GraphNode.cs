@@ -2,13 +2,17 @@ using JetBrains.Annotations;
 
 namespace CombatDicesTeam.Graphs;
 
+/// <summary>
+/// Base implementation of the graph node.
+/// </summary>
+/// <typeparam name="TValueData"></typeparam>
 [PublicAPI]
 public sealed class GraphNode<TValueData> : IGraphNode<TValueData>
 {
     public GraphNode(TValueData data)
     {
-        Value = data;
+        Payload = data;
     }
 
-    public TValueData Value { get; }
+    public TValueData Payload { get; }
 }

@@ -1,6 +1,13 @@
 namespace CombatDicesTeam.Graphs;
 
-public interface IGraphNode<TValueData>
+/// <summary>
+/// Graph node interface.
+/// </summary>
+/// <typeparam name="TNodePayload">Main data of the node</typeparam>
+public interface IGraphNode<out TNodePayload>
 {
-    public TValueData Value { get; }
+    /// <summary>
+    /// Main data of the node.
+    /// </summary>
+    public TNodePayload Payload { get; }
 }
