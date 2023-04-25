@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - 'master'
+  pull_request:
+    branches:
+      - '*'          # Run the workflow for all pull requests
 
 jobs:
 
