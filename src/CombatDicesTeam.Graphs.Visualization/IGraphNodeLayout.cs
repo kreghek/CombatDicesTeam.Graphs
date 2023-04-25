@@ -1,6 +1,6 @@
 ﻿namespace CombatDicesTeam.Graphs.Visualization;
 
-public interface IGraphNodeControl<TValueData>
+public interface IGraphNodeLayout<TValueData>
 {
     public IGraphNode<TValueData> Node { get; }
 

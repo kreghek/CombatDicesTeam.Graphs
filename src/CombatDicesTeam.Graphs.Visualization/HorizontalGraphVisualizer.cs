@@ -5,7 +5,7 @@ namespace CombatDicesTeam.Graphs.Visualization;
 [PublicAPI]
 public sealed class HorizontalGraphVisualizer<TValueData> : IGraphNodeVisualizer<TValueData>
 {
-    public IReadOnlyCollection<IGraphNodeControl<TValueData>> Create(IGraph<TValueData> graph, IVisualizerConfig config)
+    public IReadOnlyCollection<IGraphNodeLayout<TValueData>> Create(IGraph<TValueData> graph, ILayoutConfig config)
     {
         var roots = GetRoots(graph);
 
@@ -14,7 +14,21 @@ public sealed class HorizontalGraphVisualizer<TValueData> : IGraphNodeVisualizer
             roots
         };
 
-        var controls = new List<IGraphNodeControl<TValueData>>();
+        IReadOnlyCollection<IGraphNode<TValueData>> currentList = roots;
+        while (true)
+        {
+            var openListNextLevel = GetNextLevelNodes(graph, currentList);
+            levels.Add(openListNextLevel.ToArray());
+
+            if (!openListNextLevel.Any())
+            {
+                break;
+            }
+
+            currentList = openListNextLevel;
+        }
+
+        var controls = new List<IGraphNodeLayout<TValueData>>();
 
         for (var levelIndex = 0; levelIndex < levels.Count; levelIndex++)
         {
@@ -29,21 +43,27 @@ public sealed class HorizontalGraphVisualizer<TValueData> : IGraphNodeVisualizer
 
         return controls;
     }
-    
-    private IReadOnlyCollection<IGraphNode<TValueData>> GetRoots(IGraph<TValueData> campaignGraph)
+
+    private static IReadOnlyCollection<IGraphNode<TValueData>> GetNextLevelNodes(IGraph<TValueData> graph,
+        IReadOnlyCollection<IGraphNode<TValueData>> roots)
+    {
+        return roots.Select(graph.GetNext).SelectMany(x => x).ToArray();
+    }
+
+    private static IReadOnlyCollection<IGraphNode<TValueData>> GetRoots(IGraph<TValueData> campaignGraph)
     {
         // Look node are not targets for other nodes.
-        
+
         var nodesOpenList = campaignGraph.GetAllNodes().ToList();
 
         foreach (var node in nodesOpenList.ToArray())
         {
-            var otherNodes = campaignGraph.GetAllNodes().Where(x=>x != node).ToArray();
+            var otherNodes = campaignGraph.GetAllNodes().Where(x => x != node).ToArray();
 
             foreach (var otherNode in otherNodes)
             {
                 var nextNodes = campaignGraph.GetNext(otherNode);
-                
+
                 if (nextNodes.Contains(node))
                 {
                     nodesOpenList.Remove(node);

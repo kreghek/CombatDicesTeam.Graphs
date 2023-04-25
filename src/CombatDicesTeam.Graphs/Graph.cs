@@ -1,5 +1,8 @@
+using JetBrains.Annotations;
+
 namespace CombatDicesTeam.Graphs;
 
+[PublicAPI]
 public sealed class Graph<TValueData>: IGraph<TValueData>
 {
     private readonly IDictionary<IGraphNode<TValueData>, IList<IGraphNode<TValueData>>> _dict;

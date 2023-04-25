@@ -19,7 +19,7 @@ public class HorizontalGraphVisualizerTests
 
         var graph = graphMock.Object;
         
-        var visualizerConfig = Mock.Of<IVisualizerConfig>(x => x.NodeSize == 1);
+        var visualizerConfig = Mock.Of<ILayoutConfig>(x => x.NodeSize == 1);
         
         // ACT
 
@@ -48,7 +48,7 @@ public class HorizontalGraphVisualizerTests
 
         var graph = graphMock.Object;
         
-        var visualizerConfig = Mock.Of<IVisualizerConfig>(x => x.NodeSize == 1);
+        var visualizerConfig = Mock.Of<ILayoutConfig>(x => x.NodeSize == 1);
 
         var expectedPositions = new Position[]
         {
@@ -85,7 +85,7 @@ public class HorizontalGraphVisualizerTests
 
         var graph = graphMock.Object;
         
-        var visualizerConfig = Mock.Of<IVisualizerConfig>(x => x.NodeSize == 1);
+        var visualizerConfig = Mock.Of<ILayoutConfig>(x => x.NodeSize == 1);
 
         var expectedPositions = new Position[]
         {
@@ -101,4 +101,51 @@ public class HorizontalGraphVisualizerTests
 
         layouts.Should().AllSatisfy(x => expectedPositions.Contains(x.Position));
     }
+
+    [Test]
+    public void Create_LinearGraph_ReturnsNodesInLine()
+    {
+        // ARRANGE
+        
+        var graph = new Graph<object>();
+
+        GraphNode<object>? prevNode = null;
+        for (var i = 0; i < 9; i++)
+        {
+            var graphNode = new GraphNode<object>(i);
+            graph.AddNode(graphNode);
+            if (prevNode is not null)
+            {
+                graph.ConnectNodes(prevNode, graphNode);
+            }
+
+            prevNode = graphNode;
+        }
+        
+        var visualizer = new HorizontalGraphVisualizer<object>();
+        
+        var layoutConfig = Mock.Of<ILayoutConfig>(x => x.NodeSize == 1);
+        
+        // ACT
+
+        var layouts = visualizer.Create(graph, layoutConfig);
+        
+        // ASSERT
+
+        layouts.Should().HaveCount(9);
+        
+        var layoutLine = layouts.OrderBy(x => x.Position.X).ToArray();
+        for (var index = 0; index < layoutLine.Length; index++)
+        {
+            var layout = layoutLine[index];
+
+            if (index > 0)
+            {
+                var prevLayout = layoutLine[index - 1];
+
+                layout.Position.X.Should().BeGreaterThan(prevLayout.Position.X);
+            }
+        }
+    }
+
 }

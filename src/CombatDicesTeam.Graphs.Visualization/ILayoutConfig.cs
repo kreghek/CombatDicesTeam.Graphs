@@ -1,6 +1,6 @@
 namespace CombatDicesTeam.Graphs.Visualization;
 
-public interface IVisualizerConfig
+public interface ILayoutConfig
 {
     public int NodeSize { get; }
 }
