@@ -35,7 +35,7 @@ jobs:
       run: dotnet build --verbosity normal
 
     - name: Setup Stryker
-      run: dotnet tool install -g dotnet-stryker --version 3.4
+      run: dotnet tool install -g dotnet-stryker --version 3.7
 
     - name: Kill the mutants!
       run: dotnet stryker --reporter "cleartexttree"
