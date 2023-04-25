@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - master
+    paths:
+      - '**.cs'
+      - '**.sln.DotSettings'
+      - 'linter.yml'
 
 jobs:
   # Set the job key. The key is displayed as the job name
@@ -15,7 +19,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       working-directory : ./
-    needs: [dotnet-format-core-lint]
 
     steps:
       - uses: actions/checkout@v3
