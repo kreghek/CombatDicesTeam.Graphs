@@ -1,8 +1,18 @@
 ﻿namespace CombatDicesTeam.Graphs.Visualization;
 
-public interface IGraphNodeLayout<TValueData>
+/// <summary>
+/// Layout of graph node.
+/// </summary>
+/// <typeparam name="TNodePayload">Type of node's data.</typeparam>
+public interface IGraphNodeLayout<out TNodePayload>
 {
-    public IGraphNode<TValueData> Node { get; }
+    /// <summary>
+    /// Node which visualized.
+    /// </summary>
+    public IGraphNode<TNodePayload> Node { get; }
 
+    /// <summary>
+    /// Position of node.
+    /// </summary>
     public Position Position { get; }
 }
