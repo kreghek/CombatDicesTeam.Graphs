@@ -2,8 +2,9 @@
 
 name: publish
 on:
-  tags:
-    - 'v*.*.*'
+  push:
+    tags:
+      - 'v*.*.*'
 
 env:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
