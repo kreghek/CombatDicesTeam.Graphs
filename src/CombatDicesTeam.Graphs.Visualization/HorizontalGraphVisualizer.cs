@@ -47,7 +47,7 @@ public sealed class HorizontalGraphVisualizer<TValueData> : IGraphNodeVisualizer
     private static IReadOnlyCollection<IGraphNode<TValueData>> GetNextLevelNodes(IGraph<TValueData> graph,
         IReadOnlyCollection<IGraphNode<TValueData>> roots)
     {
-        return roots.Select(graph.GetNext).SelectMany(x => x).ToArray();
+        return roots.Select(graph.GetNext).SelectMany(x => x).Distinct().ToArray();
     }
 
     private static IReadOnlyCollection<IGraphNode<TValueData>> GetRoots(IGraph<TValueData> campaignGraph)

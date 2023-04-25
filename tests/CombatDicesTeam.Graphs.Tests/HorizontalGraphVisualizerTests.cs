@@ -148,4 +148,73 @@ public class HorizontalGraphVisualizerTests
         }
     }
 
+    [Test]
+    public void Create_ForkGraph_RootsInSameXAndChildMoved()
+    {
+        // ARRANGE
+
+        var visualizer = new HorizontalGraphVisualizer<int>();
+
+        var graphMock = new Mock<IGraph<int>>();
+
+        var root = Mock.Of<IGraphNode<int>>(n => n.Value == 0);
+        var child1 = Mock.Of<IGraphNode<int>>(n => n.Value == 1);
+        var child2 = Mock.Of<IGraphNode<int>>(n => n.Value == 2);
+
+        graphMock.Setup(x => x.GetAllNodes()).Returns(new[] { root, child1, child2 });
+        graphMock.Setup(x => x.GetNext(It.Is<IGraphNode<int>>(n => n == root)))
+            .Returns(new[] { child1, child2 });
+        graphMock.Setup(x => x.GetNext(It.Is<IGraphNode<int>>(n => n == child1 || n == child2)))
+            .Returns(ArraySegment<IGraphNode<int>>.Empty);
+
+        var graph = graphMock.Object;
+
+        var layoutConfig = Mock.Of<ILayoutConfig>(x => x.NodeSize == 1);
+
+        // ACT
+
+        var layouts = visualizer.Create(graph, layoutConfig);
+
+        // ASSERT
+
+        layouts.Should().Satisfy(
+            layout => layout.Node.Value == 0 && layout.Position.X == 0,
+            layout => (layout.Node.Value == 1 || layout.Node.Value == 2) && layout.Position.X == 1,
+            layout => (layout.Node.Value == 1 || layout.Node.Value == 2) && layout.Position.X == 1);
+    }
+    
+    [Test]
+    public void Create_MergeGraph_RootsInSameXAndChildMoved()
+    {
+        // ARRANGE
+
+        var visualizer = new HorizontalGraphVisualizer<int>();
+
+        var graphMock = new Mock<IGraph<int>>();
+
+        var root1 = Mock.Of<IGraphNode<int>>(n => n.Value == 0);
+        var root2 = Mock.Of<IGraphNode<int>>(n => n.Value == 1);
+        var child = Mock.Of<IGraphNode<int>>(n => n.Value == 2);
+
+        graphMock.Setup(x => x.GetAllNodes()).Returns(new[] { root1, root2, child });
+        graphMock.Setup(x => x.GetNext(It.Is<IGraphNode<int>>(n => n == root1 || n == root2)))
+            .Returns(new[] { child });
+        graphMock.Setup(x => x.GetNext(It.Is<IGraphNode<int>>(n => n == child)))
+            .Returns(ArraySegment<IGraphNode<int>>.Empty);
+
+        var graph = graphMock.Object;
+
+        var layoutConfig = Mock.Of<ILayoutConfig>(x => x.NodeSize == 1);
+
+        // ACT
+
+        var layouts = visualizer.Create(graph, layoutConfig);
+
+        // ASSERT
+
+        layouts.Should().Satisfy(
+            layout => (layout.Node.Value == 0 || layout.Node.Value == 1) && layout.Position.X == 0,
+            layout => (layout.Node.Value == 0 || layout.Node.Value == 1) && layout.Position.X == 0,
+            layout => (layout.Node.Value == 2) && layout.Position.X == 1);
+    }
 }
