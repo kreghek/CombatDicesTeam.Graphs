@@ -5,45 +5,6 @@ namespace CombatDicesTeam.Graphs.Visualization;
 [PublicAPI]
 public sealed class HorizontalGraphVisualizer<TValueData> : IGraphNodeVisualizer<TValueData>
 {
-    public IReadOnlyCollection<IGraphNodeLayout<TValueData>> Create(IGraph<TValueData> graph, ILayoutConfig config)
-    {
-        var roots = GetRoots(graph);
-
-        var levels = new List<IReadOnlyCollection<IGraphNode<TValueData>>>
-        {
-            roots
-        };
-
-        IReadOnlyCollection<IGraphNode<TValueData>> currentList = roots;
-        while (true)
-        {
-            var openListNextLevel = GetNextLevelNodes(graph, currentList);
-            levels.Add(openListNextLevel.ToArray());
-
-            if (!openListNextLevel.Any())
-            {
-                break;
-            }
-
-            currentList = openListNextLevel;
-        }
-
-        var controls = new List<IGraphNodeLayout<TValueData>>();
-
-        for (var levelIndex = 0; levelIndex < levels.Count; levelIndex++)
-        {
-            var levelItems = levels[levelIndex];
-            for (var itemIndex = 0; itemIndex < levelItems.ToArray().Length; itemIndex++)
-            {
-                var node = levelItems.ToArray()[itemIndex];
-                controls.Add(new GraphNodeControl<TValueData>(node,
-                    new Position(levelIndex * config.NodeSize, itemIndex * config.NodeSize)));
-            }
-        }
-
-        return controls;
-    }
-
     private static IReadOnlyCollection<IGraphNode<TValueData>> GetNextLevelNodes(IGraph<TValueData> graph,
         IReadOnlyCollection<IGraphNode<TValueData>> roots)
     {
@@ -72,5 +33,44 @@ public sealed class HorizontalGraphVisualizer<TValueData> : IGraphNodeVisualizer
         }
 
         return nodesOpenList;
+    }
+
+    public IReadOnlyCollection<IGraphNodeLayout<TValueData>> Create(IGraph<TValueData> graph, ILayoutConfig config)
+    {
+        var roots = GetRoots(graph);
+
+        var levels = new List<IReadOnlyCollection<IGraphNode<TValueData>>>
+        {
+            roots
+        };
+
+        var currentList = roots;
+        while (true)
+        {
+            var openListNextLevel = GetNextLevelNodes(graph, currentList);
+            levels.Add(openListNextLevel.ToArray());
+
+            if (!openListNextLevel.Any())
+            {
+                break;
+            }
+
+            currentList = openListNextLevel;
+        }
+
+        var controls = new List<IGraphNodeLayout<TValueData>>();
+
+        for (var levelIndex = 0; levelIndex < levels.Count; levelIndex++)
+        {
+            var levelItems = levels[levelIndex];
+            for (var itemIndex = 0; itemIndex < levelItems.ToArray().Length; itemIndex++)
+            {
+                var node = levelItems.ToArray()[itemIndex];
+                controls.Add(new GraphNodeControl<TValueData>(node,
+                    new Position(levelIndex * config.NodeSize, itemIndex * config.NodeSize)));
+            }
+        }
+
+        return controls;
     }
 }

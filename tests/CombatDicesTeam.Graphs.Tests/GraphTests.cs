@@ -3,33 +3,7 @@
 public class GraphTests
 {
     /// <summary>
-    /// Test checks a root returns related node as next. 
-    /// </summary>
-    [Test]
-    public void GetNext_SimplestGraph_ReturnsSingleOtherNode()
-    {
-        // ARRANGE
-
-        var graph = new Graph<object>();
-
-        var graphNodeRoot = new GraphNode<object>(0);
-        graph.AddNode(graphNodeRoot);
-        var graphNodeNext = new GraphNode<object>(1);
-        graph.AddNode(graphNodeNext);
-
-        graph.ConnectNodes(graphNodeRoot, graphNodeNext);
-
-        // ACT
-
-        var rootNext = graph.GetNext(graphNodeRoot);
-
-        // ASSERT
-
-        rootNext.Should().HaveCount(1).And.Subject.Should().Satisfy(x => x == graphNodeNext);
-    }
-
-    /// <summary>
-    /// Test checks a node from middle of linear graph returns related node from the end as next. 
+    /// Test checks a node from middle of linear graph returns related node from the end as next.
     /// </summary>
     [Test]
     public void GetNext_LinearGraph3_ReturnsSingleNodeFromRoot()
@@ -60,5 +34,31 @@ public class GraphTests
         // ASSERT
 
         next.Should().HaveCount(1).And.Subject.Should().Satisfy(x => x == nodeList[2]);
+    }
+
+    /// <summary>
+    /// Test checks a root returns related node as next.
+    /// </summary>
+    [Test]
+    public void GetNext_SimplestGraph_ReturnsSingleOtherNode()
+    {
+        // ARRANGE
+
+        var graph = new Graph<object>();
+
+        var graphNodeRoot = new GraphNode<object>(0);
+        graph.AddNode(graphNodeRoot);
+        var graphNodeNext = new GraphNode<object>(1);
+        graph.AddNode(graphNodeNext);
+
+        graph.ConnectNodes(graphNodeRoot, graphNodeNext);
+
+        // ACT
+
+        var rootNext = graph.GetNext(graphNodeRoot);
+
+        // ASSERT
+
+        rootNext.Should().HaveCount(1).And.Subject.Should().Satisfy(x => x == graphNodeNext);
     }
 }
