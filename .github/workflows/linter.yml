@@ -28,7 +28,7 @@ jobs:
       - run: dotnet tool install --global dotnet-format --version 5.1
 
       - name: Format codebase ${{ matrix.solution }}
-        run: dotnet-format ${{ matrix.solution }}.sln --fix-whitespace --fix-style --verbosity detailed
+        run: dotnet-format ${{ matrix.solution }}.sln --fix-whitespace --fix-style --exclude Using.cs --verbosity detailed
         working-directory: ${{env.working-directory}}
 
       - name: Commit changes
