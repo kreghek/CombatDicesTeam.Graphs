@@ -1,9 +1,5 @@
-using FluentAssertions;
-
-global 
-
-using Moq;
-
 global using NUnit.Framework;
 
-global 
+global using FluentAssertions;
+
+global using Moq;
