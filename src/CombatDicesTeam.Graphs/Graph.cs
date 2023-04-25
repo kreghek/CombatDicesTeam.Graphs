@@ -7,7 +7,7 @@ namespace CombatDicesTeam.Graphs;
 /// </summary>
 /// <typeparam name="TNodePayload"></typeparam>
 [PublicAPI]
-public sealed class Graph<TNodePayload>: IGraph<TNodePayload>
+public sealed class Graph<TNodePayload> : IGraph<TNodePayload>
 {
     private readonly IDictionary<IGraphNode<TNodePayload>, IList<IGraphNode<TNodePayload>>> _nodeRelations;
 
@@ -31,7 +31,7 @@ public sealed class Graph<TNodePayload>: IGraph<TNodePayload>
             next = new List<IGraphNode<TNodePayload>>();
             _nodeRelations[sourceNode] = next;
         }
-        
+
         next.Add(targetNode);
     }
 

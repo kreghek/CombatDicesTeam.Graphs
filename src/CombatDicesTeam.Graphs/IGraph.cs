@@ -14,14 +14,14 @@ public interface IGraph<TNodePayload>
     /// </summary>
     /// <returns> Returns list of nodes. </returns>
     IReadOnlyCollection<IGraphNode<TNodePayload>> GetAllNodes();
-    
+
     /// <summary>
     /// Gets connected nodes of specified node.
     /// </summary>
     /// <param name="node">A node for which connected node was requested.</param>
     /// <returns>List of connected nodes.</returns>
     IReadOnlyCollection<IGraphNode<TNodePayload>> GetNext(IGraphNode<TNodePayload> node);
-    
+
     /// <summary>
     /// Add node to the graph.
     /// </summary>
@@ -30,7 +30,7 @@ public interface IGraph<TNodePayload>
     /// Added node is not connected with other. Use <see cref="ConnectNodes"/> to make node relations. 
     /// </remarks>
     void AddNode(IGraphNode<TNodePayload> node);
-    
+
     /// <summary>
     /// Connect to nodes in the graph.
     /// </summary>

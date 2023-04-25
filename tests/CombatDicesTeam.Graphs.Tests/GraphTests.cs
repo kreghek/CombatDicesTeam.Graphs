@@ -16,18 +16,18 @@ public class GraphTests
         graph.AddNode(graphNodeRoot);
         var graphNodeNext = new GraphNode<object>(1);
         graph.AddNode(graphNodeNext);
-        
+
         graph.ConnectNodes(graphNodeRoot, graphNodeNext);
-        
+
         // ACT
 
         var rootNext = graph.GetNext(graphNodeRoot);
-        
+
         // ASSERT
 
         rootNext.Should().HaveCount(1).And.Subject.Should().Satisfy(x => x == graphNodeNext);
     }
-    
+
     /// <summary>
     /// Test checks a node from middle of linear graph returns related node from the end as next. 
     /// </summary>
@@ -35,7 +35,7 @@ public class GraphTests
     public void GetNext_LinearGraph3_ReturnsSingleNodeFromRoot()
     {
         // ARRANGE
-        
+
         var graph = new Graph<object>();
 
         GraphNode<object>? prevNode = null;
@@ -52,11 +52,11 @@ public class GraphTests
 
             prevNode = graphNode;
         }
-        
+
         // ACT
 
         var next = graph.GetNext(nodeList[1]);
-        
+
         // ASSERT
 
         next.Should().HaveCount(1).And.Subject.Should().Satisfy(x => x == nodeList[2]);
