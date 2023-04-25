@@ -1,6 +1,6 @@
 ﻿namespace CombatDicesTeam.Graphs.Visualization.Tests;
 
-public sealed class HorizontalGraphVisualizerTests_Size
+public sealed class HorizontalGraphVisualizerSizeTests
 {
     /// <summary>
     /// Test checks the visualizer layouts node between two related.
