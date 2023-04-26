@@ -31,7 +31,7 @@ jobs:
         env:
           DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
           DOTNET_CLI_TELEMETRY_OUTPUT: 1
-        run: dotnet test --configuration Release /p:CollectCoverage=true /p:CoverletOutput=${{env.TEST_RESULT_PATH}} /p:CoverletOutputFormat=\"cobertura,json\" /p:MergeWith="${{env.TEST_RESULT_PATH}}coverage.json" /p:SkipAutoProps=true /p:ExcludeByAttribute=\"Obsolete,GeneratedCode,CompilerGenerated\" /maxcpucount:1
+        run: dotnet test --configuration Release /p:CollectCoverage=true /p:CoverletOutput=${{env.TEST_RESULT_PATH}} /p:CoverletOutputFormat=\"cobertura,json\" /p:SkipAutoProps=true /p:ExcludeByAttribute=\"Obsolete,GeneratedCode,CompilerGenerated\" /maxcpucount:1
 
       - name: Publish coverage report to codecov.io
         uses: codecov/codecov-action@v3
