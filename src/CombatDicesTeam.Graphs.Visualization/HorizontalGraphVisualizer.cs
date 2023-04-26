@@ -74,7 +74,7 @@ public sealed class HorizontalGraphVisualizer<TValueData> : IGraphNodeVisualizer
                 var levelX = levelIndex * config.NodeSize;
                 var itemY = itemIndex * config.NodeSize;
                 var layoutPosition = new Position(levelX, itemY + offsetY);
-                controls.Add(new GraphNodeControl<TValueData>(node, layoutPosition));
+                controls.Add(new GraphNodeLayout<TValueData>(node, layoutPosition));
             }
         }
 

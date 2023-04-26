@@ -15,4 +15,9 @@ public interface IGraphNodeLayout<out TNodePayload>
     /// Position of node.
     /// </summary>
     public Position Position { get; }
+
+    /// <summary>
+    /// Size of layout.
+    /// </summary>
+    public Size Size { get; }
 }
