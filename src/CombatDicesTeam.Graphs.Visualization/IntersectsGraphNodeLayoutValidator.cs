@@ -1,8 +1,11 @@
-﻿namespace CombatDicesTeam.Graphs.Visualization;
+﻿using JetBrains.Annotations;
+
+namespace CombatDicesTeam.Graphs.Visualization;
 
 /// <summary>
 /// Validator to test layout instersections.
 /// </summary>
+[PublicAPI]
 public sealed class IntersectsGraphNodeLayoutValidator<TNodePayload> : IGraphNodeLayoutValidator<TNodePayload>
 {
     public bool Validate(IGraphNodeLayout<TNodePayload> layout, IReadOnlyCollection<IGraphNodeLayout<TNodePayload>> sourceLayouts)
@@ -27,7 +30,9 @@ public sealed class IntersectsGraphNodeLayoutValidator<TNodePayload> : IGraphNod
             var x2A = layout.Position.X + layout.Size.Width;
             var y2A = layout.Position.Y + layout.Size.Height;
 
-            if ((x2A >= x1 && x1A <= x2) && (y2A >= y1 && y1A <= y2))
+            var xIntersects = x2A >= x1 && x1A <= x2;
+            var yIntersects = y2A >= y1 && y1A <= y2;
+            if (xIntersects && yIntersects)
             {
                 return true;
             }
