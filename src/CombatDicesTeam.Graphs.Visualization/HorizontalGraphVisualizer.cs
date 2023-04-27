@@ -34,14 +34,15 @@ public sealed class HorizontalGraphVisualizer<TValueData> : IGraphNodeVisualizer
 
         return nodesOpenList;
     }
-    
+
     private static IEnumerable<IEnumerable<T>> GetPermutations<T>(IEnumerable<T> list, int length)
     {
-        if (length == 1) return list.Select(t => new T[] { t });
+        if (length == 1) return list.Select(t => new[] { t });
 
-        return GetPermutations(list, length - 1)
-            .SelectMany(t => list.Where(e => !t.Contains(e)),
-                (t1, t2) => t1.Concat(new T[] { t2 }));
+        var materializedList = list as T[] ?? list.ToArray();
+        return GetPermutations(materializedList, length - 1)
+            .SelectMany(t => materializedList.Where(e => !t.Contains(e)),
+                (t1, t2) => t1.Concat(new[] { t2 }));
     }
 
     private (IReadOnlyList<IReadOnlyList<IGraphNode<TValueData>>>? TotalLevels, bool Success) CollectLevelInner(
@@ -61,22 +62,30 @@ public sealed class HorizontalGraphVisualizer<TValueData> : IGraphNodeVisualizer
 
         foreach (var nextLevelNodesPerm in nextLevelNodesPerms)
         {
+            var levelNodesPermMaterialized =
+                nextLevelNodesPerm as IGraphNode<TValueData>[] ?? nextLevelNodesPerm.ToArray();
+
             var nextHaveSameOrder =
-                CheckNextLevelHaveSameOrder(graph, stableCurrentLevelNodes, nextLevelNodesPerm.ToArray());
+                CheckNextLevelHaveSameOrder(graph, stableCurrentLevelNodes, levelNodesPermMaterialized);
 
-            if (nextHaveSameOrder)
+            if (!nextHaveSameOrder)
             {
-                var totalList = new List<IReadOnlyList<IGraphNode<TValueData>>>(currentTotalLevels);
-                totalList.Add(nextLevelNodesPerm.ToArray());
-                var next = CollectLevelInner(graph, nextLevelNodesPerm.ToArray(), totalList);
+                // Next level nodes is in wrong order.
+                // Try next permutation.
+                continue;
+            }
 
-                if (next.Success)
-                {
-                    return (next.TotalLevels, true);
-                }
+            var totalList = new List<IReadOnlyList<IGraphNode<TValueData>>>(currentTotalLevels)
+            {
+                levelNodesPermMaterialized
+            };
+            var next = CollectLevelInner(graph, levelNodesPermMaterialized, totalList);
+
+            if (next.Success)
+            {
+                return (next.TotalLevels, true);
             }
         }
-
 
         return (null, false);
     }
@@ -88,12 +97,15 @@ public sealed class HorizontalGraphVisualizer<TValueData> : IGraphNodeVisualizer
 
         foreach (var rootNodesPerm in rootNodesPerms)
         {
-            var totalList = new List<IReadOnlyList<IGraphNode<TValueData>>>();
-            totalList.Add(rootNodesPerm.ToArray());
-            
-            var next = CollectLevelInner(graph, rootNodesPerm.ToArray(), totalList);
+            var rootNodesPermMaterialized = rootNodesPerm as IGraphNode<TValueData>[] ?? rootNodesPerm.ToArray();
+            var totalList = new List<IReadOnlyList<IGraphNode<TValueData>>>
+            {
+                rootNodesPermMaterialized.ToArray()
+            };
 
-            if (next.Success)
+            var next = CollectLevelInner(graph, rootNodesPermMaterialized.ToArray(), totalList);
+
+            if (next.Success && next.TotalLevels is not null)
             {
                 return next.TotalLevels;
             }
@@ -107,32 +119,39 @@ public sealed class HorizontalGraphVisualizer<TValueData> : IGraphNodeVisualizer
         IReadOnlyCollection<IGraphNode<TValueData>> currentLevelNodes,
         IReadOnlyCollection<IGraphNode<TValueData>> nextLevelNodes)
     {
-        var numCurrentLevelNodes = currentLevelNodes.Select((x, i) =>  (x, i) ).ToArray();
-        var numNextLevelNodes = nextLevelNodes.Select(x => new { Node = x, Weight = GetWeight(graph, x, numCurrentLevelNodes) }).ToArray();
-
-        for (int i = 0; i < numNextLevelNodes.Length; i++)
+        var weightedCurrentLevelNodes = currentLevelNodes.Select((x, i) => (x, i)).ToArray();
+        var weightedNextLevelNodes = nextLevelNodes.Select(x => new
         {
-            if (i > 0)
-            {
-                if (numNextLevelNodes[i].Weight < numNextLevelNodes[i - 1].Weight)
-                {
-                    return false;
-                }
-            }
-        }
+            Node = x,
+            Weight = CalculateChildWeight(graph, x, weightedCurrentLevelNodes)
+        }).ToArray();
 
-        return true;
+        var nextLevelNodeWeights = weightedNextLevelNodes.Select(x => x.Weight).ToArray();
+
+        return CheckListIsOrdered(nextLevelNodeWeights);
     }
 
-    private static double GetWeight(IGraph<TValueData> graph, IGraphNode<TValueData> graphNode,
-        (IGraphNode<TValueData> Node, int Weight)[] numCurrentLevelNodes)
+    private static bool CheckListIsOrdered(IReadOnlyList<double> list)
     {
-        return numCurrentLevelNodes.Where(x => graph.GetNext(x.Node).Contains(graphNode)).Average(x => x.Weight);
+        return !list.Where((t, i) => i > 0 && t < list[i - 1]).Any();
     }
 
-    private static bool CheckCollectionsAreSame(IGraphNode<TValueData>[] testedOpenList, IReadOnlyCollection<IGraphNode<TValueData>> nextInGraph)
+    /// <summary>
+    /// Calculates weight of node base on parent weight.
+    /// </summary>
+    private static double CalculateChildWeight(IGraph<TValueData> graph, IGraphNode<TValueData> graphNode,
+        (IGraphNode<TValueData> Node, int Weight)[] weightedParentNodes)
     {
-        return testedOpenList.All(graphNode => nextInGraph.Contains(graphNode));
+        return weightedParentNodes.Where(x => graph.GetNext(x.Node).Contains(graphNode)).Average(x => x.Weight);
+    }
+
+    /// <summary>
+    /// Check two collections are contain same elements without order.
+    /// </summary>
+    private static bool CheckCollectionsAreSame(IReadOnlyCollection<IGraphNode<TValueData>> list1,
+        IReadOnlyCollection<IGraphNode<TValueData>> list2)
+    {
+        return list1.Count == list2.Count && list1.All(list2.Contains);
     }
 
     public IReadOnlyCollection<IGraphNodeLayout<TValueData>> Create(IGraph<TValueData> graph, ILayoutConfig config)
