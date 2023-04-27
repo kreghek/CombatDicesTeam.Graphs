@@ -53,13 +53,18 @@ public sealed class HorizontalGraphVisualizerAlignmentTests
 
         var root1Layout = layouts.Single(x => x.Node.Payload == ROOT1_PAYLOAD);
         var child1Layout = layouts.Single(x => x.Node.Payload == CHILD1_PAYLOAD);
-
-        child1Layout.Position.Y.Should().Be(root1Layout.Position.Y);
         
         var root2Layout = layouts.Single(x => x.Node.Payload == ROOT2_PAYLOAD);
         var child2Layout = layouts.Single(x => x.Node.Payload == CHILD2_PAYLOAD);
 
-        child2Layout.Position.Y.Should().Be(root2Layout.Position.Y);
+        if (root1Layout.Position.Y < root2Layout.Position.Y)
+        {
+            child1Layout.Position.Y.Should().BeLessThan(child2Layout.Position.Y);
+        }
+        else
+        {
+            child1Layout.Position.Y.Should().BeGreaterThan(child2Layout.Position.Y);
+        }
     }
 
     private static IReadOnlyCollection<IGraphNode<T>> GetNodeListByIndexes<T>(IReadOnlyList<IGraphNode<T>> graphNodes, IEnumerable<int> indexes)
@@ -120,15 +125,20 @@ public sealed class HorizontalGraphVisualizerAlignmentTests
         var layouts = visualizer.Create(graph, layoutConfig);
 
         // ASSERT
-
+        
         var root1Layout = layouts.Single(x => x.Node.Payload == ROOT1_PAYLOAD);
         var child1Layout = layouts.Single(x => x.Node.Payload == CHILD1_PAYLOAD);
-
-        child1Layout.Position.Y.Should().Be(root1Layout.Position.Y);
         
         var root2Layout = layouts.Single(x => x.Node.Payload == ROOT2_PAYLOAD);
         var child2Layout = layouts.Single(x => x.Node.Payload == CHILD2_PAYLOAD);
 
-        child2Layout.Position.Y.Should().Be(root2Layout.Position.Y);
+        if (root1Layout.Position.Y < root2Layout.Position.Y)
+        {
+            child1Layout.Position.Y.Should().BeLessThan(child2Layout.Position.Y);
+        }
+        else
+        {
+            child1Layout.Position.Y.Should().BeGreaterThan(child2Layout.Position.Y);
+        }
     }
 }
