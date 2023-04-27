@@ -35,7 +35,6 @@ public sealed class RetryTransformLayoutPostProcessor<TNodePayload> : ILayoutPos
 
                 if (isValidTransformation)
                 {
-
                     processedList.Add(transformedLayout);
                     openList.Remove(layout);
                 }
