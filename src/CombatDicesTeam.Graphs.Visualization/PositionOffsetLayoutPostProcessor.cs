@@ -3,54 +3,6 @@
 namespace CombatDicesTeam.Graphs.Visualization;
 
 [PublicAPI]
-public sealed class RotatePostProcessor<TNodePayload> : ILayoutPostProcessor<TNodePayload>
-{
-    private readonly float _radians;
-
-    public RotatePostProcessor(float radians)
-    {
-        _radians = radians;
-    }
-
-    public IReadOnlyCollection<IGraphNodeLayout<TNodePayload>> Process(IReadOnlyCollection<IGraphNodeLayout<TNodePayload>> sourceLayouts)
-    {
-        return sourceLayouts.Select(layout => new GraphNodeLayout<TNodePayload>(layout.Node,
-            GetPosition(layout), layout.Size)).ToArray();
-    }
-
-    private Position GetPosition(IGraphNodeLayout<TNodePayload> layout)
-    {
-        var distance = Math.Sqrt(Math.Pow(layout.Position.X, 2) + Math.Pow(layout.Position.Y, 2));
-        var currentAngle = Math.Atan2(layout.Position.Y, layout.Position.X);
-
-        var x = Math.Cos(currentAngle + _radians) * distance;
-        var y = Math.Sin(currentAngle + _radians) * distance;
-        return new Position((int)x, (int)y);
-    }
-}
-
-[PublicAPI]
-public sealed class ScaleHorizontallyPostProcessor<TNodePayload> : ILayoutPostProcessor<TNodePayload>
-{
-    private readonly int _distance;
-
-    public ScaleHorizontallyPostProcessor(int distance)
-    {
-        _distance = distance;
-    }
-
-    public IReadOnlyCollection<IGraphNodeLayout<TNodePayload>> Process(
-        IReadOnlyCollection<IGraphNodeLayout<TNodePayload>> sourceLayouts)
-    {
-        return sourceLayouts.Select(layout => new GraphNodeLayout<TNodePayload>(layout.Node,
-            layout.Position with
-            {
-                X = layout.Position.X + _distance
-            }, layout.Size)).ToArray();
-    }
-}
-
-[PublicAPI]
 public sealed class PositionOffsetLayoutPostProcessor<TNodePayload> : ILayoutPostProcessor<TNodePayload>
 {
     private readonly IPositionOffsetRandomSource _positionOffsetRandomSource;

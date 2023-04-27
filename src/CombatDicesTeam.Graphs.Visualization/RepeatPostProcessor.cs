@@ -16,8 +16,9 @@ public sealed class RepeatPostProcessor<TNodePayload> : ILayoutPostProcessor<TNo
 
     public IReadOnlyCollection<IGraphNodeLayout<TNodePayload>> Process(IReadOnlyCollection<IGraphNodeLayout<TNodePayload>> sourceLayouts)
     {
-        for (int i = 0; i < _repeatCount; i++)
+        for (var i = 0; i < _repeatCount; i++)
         {
+            // ReSharper disable once LoopCanBeConvertedToQuery
             foreach (var postProcessor in _layoutPostProcessors)
             {
                 sourceLayouts = postProcessor.Process(sourceLayouts);
