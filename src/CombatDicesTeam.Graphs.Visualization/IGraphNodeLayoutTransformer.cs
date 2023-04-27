@@ -1,13 +1,14 @@
 ﻿namespace CombatDicesTeam.Graphs.Visualization;
 
 /// <summary>
-/// Provider of the position offset for specified layout node.
+/// Transformer of node layout.
 /// </summary>
 /// <typeparam name="TNodeLayout">Type of node payload.</typeparam>
 /// <remarks>
-/// Used in the post-processor to handle each node layout personally.
+/// - Used in the post-processor to handle each node layout personally.
+/// - There is no garantee to return same layout object.
 /// </remarks>
-public interface IGraphNodeLayoutTransformProvider<TNodeLayout>
+public interface IGraphNodeLayoutTransformer<TNodeLayout>
 {
     /// <summary>
     /// Get position offset for specified layout.

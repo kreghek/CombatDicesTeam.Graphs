@@ -8,11 +8,11 @@ namespace CombatDicesTeam.Graphs.Visualization;
 [PublicAPI]
 public sealed class RetryTransformLayoutPostProcessor<TNodePayload> : ILayoutPostProcessor<TNodePayload>
 {
-    private readonly IGraphNodeLayoutTransformProvider<TNodePayload> _nodeLayoutTransformProvider;
+    private readonly IGraphNodeLayoutTransformer<TNodePayload> _nodeLayoutTransformProvider;
     private readonly IGraphNodeLayoutValidator<TNodePayload> _layoutValidator;
     private readonly int _attemptLimit;
 
-    public RetryTransformLayoutPostProcessor(IGraphNodeLayoutTransformProvider<TNodePayload> layoutTransformProvider, IGraphNodeLayoutValidator<TNodePayload> layoutValidator, int attemptLimit)
+    public RetryTransformLayoutPostProcessor(IGraphNodeLayoutTransformer<TNodePayload> layoutTransformProvider, IGraphNodeLayoutValidator<TNodePayload> layoutValidator, int attemptLimit)
     {
         _nodeLayoutTransformProvider = layoutTransformProvider;
         _layoutValidator = layoutValidator;
@@ -22,39 +22,38 @@ public sealed class RetryTransformLayoutPostProcessor<TNodePayload> : ILayoutPos
     /// <inheritdoc/>
     public IReadOnlyCollection<IGraphNodeLayout<TNodePayload>> Process(IReadOnlyCollection<IGraphNodeLayout<TNodePayload>> sourceLayouts)
     {
-        var processedLayouts = new List<IGraphNodeLayout<TNodePayload>>();
+        var processedList = new List<IGraphNodeLayout<TNodePayload>>();
+        var openList = new List<IGraphNodeLayout<TNodePayload>>(sourceLayouts);
 
-        foreach (var layout in sourceLayouts)
+        var attemptIndex = 0;
+        while (attemptIndex < _attemptLimit - 1)
         {
-            var transformedLayout = _nodeLayoutTransformProvider.Get(layout);
-
-            var attemptIndex = 1;
-            var wasTransformed = false;
-            while (true)
-            { 
+            foreach (var layout in openList.ToArray())
+            {
+                var transformedLayout = _nodeLayoutTransformProvider.Get(layout);
                 var isValidTransformation = _layoutValidator.Validate(transformedLayout, sourceLayouts);
 
                 if (isValidTransformation)
-                { 
-                    wasTransformed = true;
-                    processedLayouts.Add(transformedLayout);
-                    break;
-                }
-
-                attemptIndex++;
-
-                if (attemptIndex > _attemptLimit)
                 {
-                    break;
+
+                    processedList.Add(transformedLayout);
+                    openList.Remove(layout);
                 }
             }
 
-            if (!wasTransformed)
+            attemptIndex++;
+
+            if (!openList.Any())
             {
-                processedLayouts.Add(layout);
+                break;
             }
         }
 
-        return processedLayouts;
+        if (openList.Any())
+        {
+            processedList.AddRange(openList);
+        }
+
+        return processedList;
     }
 }
