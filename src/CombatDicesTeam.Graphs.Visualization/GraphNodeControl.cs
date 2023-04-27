@@ -1,4 +1,7 @@
 namespace CombatDicesTeam.Graphs.Visualization;
 
-public sealed record GraphNodeControl<TValueData>
-    (IGraphNode<TValueData> Node, Position Position) : IGraphNodeLayout<TValueData>;
+/// <summary>
+/// Base implementation of node layput.
+/// </summary>
+public sealed record GraphNodeLayout<TNodePayload>
+    (IGraphNode<TNodePayload> Node, Position Position, Size Size) : IGraphNodeLayout<TNodePayload>;
