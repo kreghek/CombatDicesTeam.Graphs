@@ -5,6 +5,59 @@ namespace CombatDicesTeam.Graphs.Visualization;
 [PublicAPI]
 public sealed class HorizontalGraphVisualizer<TValueData> : IGraphNodeVisualizer<TValueData>
 {
+    /// <summary>
+    /// Calculates weight of node base on parent weight.
+    /// </summary>
+    private static double CalculateChildWeight(IGraph<TValueData> graph, IGraphNode<TValueData> graphNode,
+        (IGraphNode<TValueData> Node, int Weight)[] weightedParentNodes)
+    {
+        return weightedParentNodes.Where(x => graph.GetNext(x.Node).Contains(graphNode)).Average(x => x.Weight);
+    }
+
+    private static IReadOnlyList<IReadOnlyList<IGraphNode<TValueData>>> CollectLevelInner(
+        IGraph<TValueData> graph,
+        IReadOnlyCollection<IGraphNode<TValueData>> stableCurrentLevelNodes,
+        IReadOnlyList<IReadOnlyList<IGraphNode<TValueData>>> currentTotalLevels)
+    {
+        var nextLevelNodes = GetNextLevelNodes(graph, stableCurrentLevelNodes).ToArray();
+
+        if (!nextLevelNodes.Any())
+        {
+            return currentTotalLevels;
+        }
+
+        var weightedCurrentLevelNodes = stableCurrentLevelNodes.Select((x, i) => (x, i)).ToArray();
+        var weightedNextLevelNodes = nextLevelNodes.Select(x => new
+        {
+            Node = x,
+            Weight = CalculateChildWeight(graph, x, weightedCurrentLevelNodes)
+        }).ToArray();
+
+        var orderedWeightedNextLevelNodes = weightedNextLevelNodes.OrderBy(x => x.Weight).Select(x => x.Node).ToArray();
+
+        var totalList = new List<IReadOnlyList<IGraphNode<TValueData>>>(currentTotalLevels)
+        {
+            orderedWeightedNextLevelNodes.ToArray()
+        };
+
+        var totalLevels = CollectLevelInner(graph, orderedWeightedNextLevelNodes, totalList);
+
+        return totalLevels;
+    }
+
+    private static IReadOnlyList<IReadOnlyList<IGraphNode<TValueData>>> CollectLevels(IGraph<TValueData> graph,
+        IReadOnlyList<IGraphNode<TValueData>> rootNodes)
+    {
+        var totalList = new List<IReadOnlyList<IGraphNode<TValueData>>>
+        {
+            rootNodes
+        };
+
+        var totalLevels = CollectLevelInner(graph, rootNodes, totalList);
+
+        return totalLevels;
+    }
+
     private static IReadOnlyCollection<IGraphNode<TValueData>> GetNextLevelNodes(IGraph<TValueData> graph,
         IReadOnlyCollection<IGraphNode<TValueData>> roots)
     {
@@ -33,59 +86,6 @@ public sealed class HorizontalGraphVisualizer<TValueData> : IGraphNodeVisualizer
         }
 
         return nodesOpenList;
-    }
-
-    private static IReadOnlyList<IReadOnlyList<IGraphNode<TValueData>>> CollectLevelInner(
-        IGraph<TValueData> graph,
-        IReadOnlyCollection<IGraphNode<TValueData>> stableCurrentLevelNodes,
-        IReadOnlyList<IReadOnlyList<IGraphNode<TValueData>>> currentTotalLevels)
-    {
-        var nextLevelNodes = GetNextLevelNodes(graph, stableCurrentLevelNodes).ToArray();
-
-        if (!nextLevelNodes.Any())
-        {
-            return currentTotalLevels;
-        }
-        
-        var weightedCurrentLevelNodes = stableCurrentLevelNodes.Select((x, i) => (x, i)).ToArray();
-        var weightedNextLevelNodes = nextLevelNodes.Select(x => new
-        {
-            Node = x,
-            Weight = CalculateChildWeight(graph, x, weightedCurrentLevelNodes)
-        }).ToArray();
-
-        var orderedWeightedNextLevelNodes = weightedNextLevelNodes.OrderBy(x => x.Weight).Select(x => x.Node).ToArray();
-        
-        var totalList = new List<IReadOnlyList<IGraphNode<TValueData>>>(currentTotalLevels)
-        {
-            orderedWeightedNextLevelNodes.ToArray()
-        };
-        
-        var totalLevels = CollectLevelInner(graph, orderedWeightedNextLevelNodes, totalList);
-        
-        return totalLevels;
-    }
-
-    private static IReadOnlyList<IReadOnlyList<IGraphNode<TValueData>>> CollectLevels(IGraph<TValueData> graph,
-        IReadOnlyList<IGraphNode<TValueData>> rootNodes)
-    {
-        var totalList = new List<IReadOnlyList<IGraphNode<TValueData>>>
-        {
-            rootNodes
-        };
-        
-        var totalLevels = CollectLevelInner(graph, rootNodes, totalList);
-
-        return totalLevels;
-    }
-
-    /// <summary>
-    /// Calculates weight of node base on parent weight.
-    /// </summary>
-    private static double CalculateChildWeight(IGraph<TValueData> graph, IGraphNode<TValueData> graphNode,
-        (IGraphNode<TValueData> Node, int Weight)[] weightedParentNodes)
-    {
-        return weightedParentNodes.Where(x => graph.GetNext(x.Node).Contains(graphNode)).Average(x => x.Weight);
     }
 
     public IReadOnlyCollection<IGraphNodeLayout<TValueData>> Create(IGraph<TValueData> graph, ILayoutConfig config)

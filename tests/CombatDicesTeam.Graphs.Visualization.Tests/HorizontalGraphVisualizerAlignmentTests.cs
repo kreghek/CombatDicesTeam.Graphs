@@ -53,7 +53,7 @@ public sealed class HorizontalGraphVisualizerAlignmentTests
 
         var root1Layout = layouts.Single(x => x.Node.Payload == ROOT1_PAYLOAD);
         var child1Layout = layouts.Single(x => x.Node.Payload == CHILD1_PAYLOAD);
-        
+
         var root2Layout = layouts.Single(x => x.Node.Payload == ROOT2_PAYLOAD);
         var child2Layout = layouts.Single(x => x.Node.Payload == CHILD2_PAYLOAD);
 
@@ -65,11 +65,6 @@ public sealed class HorizontalGraphVisualizerAlignmentTests
         {
             child1Layout.Position.Y.Should().BeGreaterThan(child2Layout.Position.Y);
         }
-    }
-
-    private static IReadOnlyCollection<IGraphNode<T>> GetNodeListByIndexes<T>(IReadOnlyList<IGraphNode<T>> graphNodes, IEnumerable<int> indexes)
-    {
-        return indexes.Select(index => graphNodes[index]).ToList();
     }
 
     /// <summary>
@@ -96,7 +91,7 @@ public sealed class HorizontalGraphVisualizerAlignmentTests
         var rootIsolated = Mock.Of<IGraphNode<int>>(n => n.Payload == ROOT_ISOLATED_PAYLOAD);
         var child1 = Mock.Of<IGraphNode<int>>(n => n.Payload == CHILD1_PAYLOAD);
         var child2 = Mock.Of<IGraphNode<int>>(n => n.Payload == CHILD2_PAYLOAD);
-        
+
         var nodeList = GetNodeListByIndexes(new[] { root1, root2, child1, child2, rootIsolated }, indexes);
 
         graphMock.Setup(x => x.GetAllNodes()).Returns(nodeList);
@@ -106,7 +101,7 @@ public sealed class HorizontalGraphVisualizerAlignmentTests
 
         graphMock.Setup(x => x.GetNext(It.Is<IGraphNode<int>>(n => n == root2)))
             .Returns(new[] { child2 });
-        
+
         graphMock.Setup(x => x.GetNext(It.Is<IGraphNode<int>>(n => n == rootIsolated)))
             .Returns(ArraySegment<IGraphNode<int>>.Empty);
 
@@ -125,10 +120,10 @@ public sealed class HorizontalGraphVisualizerAlignmentTests
         var layouts = visualizer.Create(graph, layoutConfig);
 
         // ASSERT
-        
+
         var root1Layout = layouts.Single(x => x.Node.Payload == ROOT1_PAYLOAD);
         var child1Layout = layouts.Single(x => x.Node.Payload == CHILD1_PAYLOAD);
-        
+
         var root2Layout = layouts.Single(x => x.Node.Payload == ROOT2_PAYLOAD);
         var child2Layout = layouts.Single(x => x.Node.Payload == CHILD2_PAYLOAD);
 
@@ -141,7 +136,7 @@ public sealed class HorizontalGraphVisualizerAlignmentTests
             child1Layout.Position.Y.Should().BeGreaterThan(child2Layout.Position.Y);
         }
     }
-    
+
     /// <summary>
     /// Test checks the visualizer layouts child node opposite related parents.
     /// </summary>
@@ -166,7 +161,7 @@ public sealed class HorizontalGraphVisualizerAlignmentTests
         var root3 = Mock.Of<IGraphNode<int>>(n => n.Payload == ROOT3_PAYLOAD);
         var child1 = Mock.Of<IGraphNode<int>>(n => n.Payload == CHILD1_PAYLOAD);
         var child2 = Mock.Of<IGraphNode<int>>(n => n.Payload == CHILD2_PAYLOAD);
-        
+
         var nodeList = GetNodeListByIndexes(new[] { root1, root2, child1, child2, root3 }, indexes);
 
         graphMock.Setup(x => x.GetAllNodes()).Returns(nodeList);
@@ -176,7 +171,7 @@ public sealed class HorizontalGraphVisualizerAlignmentTests
 
         graphMock.Setup(x => x.GetNext(It.Is<IGraphNode<int>>(n => n == root2)))
             .Returns(new[] { child2 });
-        
+
         graphMock.Setup(x => x.GetNext(It.Is<IGraphNode<int>>(n => n == root3)))
             .Returns(new[] { child1, child2 });
 
@@ -195,10 +190,10 @@ public sealed class HorizontalGraphVisualizerAlignmentTests
         var layouts = visualizer.Create(graph, layoutConfig);
 
         // ASSERT
-        
+
         var root1Layout = layouts.Single(x => x.Node.Payload == ROOT1_PAYLOAD);
         var child1Layout = layouts.Single(x => x.Node.Payload == CHILD1_PAYLOAD);
-        
+
         var root2Layout = layouts.Single(x => x.Node.Payload == ROOT2_PAYLOAD);
         var child2Layout = layouts.Single(x => x.Node.Payload == CHILD2_PAYLOAD);
 
@@ -210,5 +205,11 @@ public sealed class HorizontalGraphVisualizerAlignmentTests
         {
             child1Layout.Position.Y.Should().BeGreaterThan(child2Layout.Position.Y);
         }
+    }
+
+    private static IReadOnlyCollection<IGraphNode<T>> GetNodeListByIndexes<T>(IReadOnlyList<IGraphNode<T>> graphNodes,
+        IEnumerable<int> indexes)
+    {
+        return indexes.Select(index => graphNodes[index]).ToList();
     }
 }
