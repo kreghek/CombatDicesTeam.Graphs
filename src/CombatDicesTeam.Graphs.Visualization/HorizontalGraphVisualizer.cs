@@ -103,11 +103,11 @@ public sealed class HorizontalGraphVisualizer<TValueData> : IGraphNodeVisualizer
                 rootNodesPermMaterialized.ToArray()
             };
 
-            var next = CollectLevelInner(graph, rootNodesPermMaterialized.ToArray(), totalList);
+            var (totalLevels, success) = CollectLevelInner(graph, rootNodesPermMaterialized.ToArray(), totalList);
 
-            if (next.Success && next.TotalLevels is not null)
+            if (success && totalLevels is not null)
             {
-                return next.TotalLevels;
+                return totalLevels;
             }
         }
 
