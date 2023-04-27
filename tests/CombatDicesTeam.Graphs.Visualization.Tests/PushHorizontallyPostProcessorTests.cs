@@ -11,8 +11,12 @@ public class PushHorizontallyPostProcessorTests
 
         var sourceLayouts = new[]
         {
-            Mock.Of<IGraphNodeLayout<int>>(x => x.Position == new Position(0, 0) && x.Size == new Size(1, 1) && x.Node == Mock.Of<IGraphNode<int>>(n => n.Payload == 0)),
-            Mock.Of<IGraphNodeLayout<int>>(x => x.Position == new Position(1, 0) && x.Size == new Size(1, 1) && x.Node == Mock.Of<IGraphNode<int>>(n => n.Payload == 1))
+            Mock.Of<IGraphNodeLayout<int>>(x =>
+                x.Position == new Position(0, 0) && x.Size == new Size(1, 1) &&
+                x.Node == Mock.Of<IGraphNode<int>>(n => n.Payload == 0)),
+            Mock.Of<IGraphNodeLayout<int>>(x =>
+                x.Position == new Position(1, 0) && x.Size == new Size(1, 1) &&
+                x.Node == Mock.Of<IGraphNode<int>>(n => n.Payload == 1))
         };
 
         // ACT

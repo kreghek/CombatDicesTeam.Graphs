@@ -8,11 +8,13 @@ public class RetryTransformLayoutPostProcessorTests
         // ARRANGE
 
         var transformerMock = new Mock<IGraphNodeLayoutTransformer<object>>();
-        transformerMock.Setup(x => x.Get(It.IsAny<IGraphNodeLayout<object>>())).Returns(Mock.Of<IGraphNodeLayout<object>>());
+        transformerMock.Setup(x => x.Get(It.IsAny<IGraphNodeLayout<object>>()))
+            .Returns(Mock.Of<IGraphNodeLayout<object>>());
 
         var attemptIndex = 0;
         var validatorMock = new Mock<IGraphNodeLayoutValidator<object>>();
-        validatorMock.Setup(x => x.Validate(It.IsAny<IGraphNodeLayout<object>>(), It.IsAny<IReadOnlyCollection<IGraphNodeLayout<object>>>())).Returns(() =>
+        validatorMock.Setup(x => x.Validate(It.IsAny<IGraphNodeLayout<object>>(),
+            It.IsAny<IReadOnlyCollection<IGraphNodeLayout<object>>>())).Returns(() =>
         {
             attemptIndex++;
             return attemptIndex - 1 == 0;
@@ -22,7 +24,7 @@ public class RetryTransformLayoutPostProcessorTests
 
         var sourceLayouts = new[]
         {
-            Mock.Of<IGraphNodeLayout<object>>(x=>x.Position == new Position(0, 0))
+            Mock.Of<IGraphNodeLayout<object>>(x => x.Position == new Position(0, 0))
         };
 
         // ACT

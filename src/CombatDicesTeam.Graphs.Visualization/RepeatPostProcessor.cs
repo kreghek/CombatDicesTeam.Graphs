@@ -5,8 +5,8 @@ namespace CombatDicesTeam.Graphs.Visualization;
 [PublicAPI]
 public sealed class RepeatPostProcessor<TNodePayload> : ILayoutPostProcessor<TNodePayload>
 {
-    private readonly int _repeatCount;
     private readonly ILayoutPostProcessor<TNodePayload>[] _layoutPostProcessors;
+    private readonly int _repeatCount;
 
     public RepeatPostProcessor(int repeatCount, params ILayoutPostProcessor<TNodePayload>[] layoutPostProcessors)
     {
@@ -14,7 +14,8 @@ public sealed class RepeatPostProcessor<TNodePayload> : ILayoutPostProcessor<TNo
         _layoutPostProcessors = layoutPostProcessors;
     }
 
-    public IReadOnlyCollection<IGraphNodeLayout<TNodePayload>> Process(IReadOnlyCollection<IGraphNodeLayout<TNodePayload>> sourceLayouts)
+    public IReadOnlyCollection<IGraphNodeLayout<TNodePayload>> Process(
+        IReadOnlyCollection<IGraphNodeLayout<TNodePayload>> sourceLayouts)
     {
         for (var i = 0; i < _repeatCount; i++)
         {

@@ -12,5 +12,6 @@ public interface ILayoutPostProcessor<TNodePayload>
     /// </summary>
     /// <param name="sourceLayouts">Set of source node layouts.</param>
     /// <returns>Modified set of node layouts.</returns>
-    public IReadOnlyCollection<IGraphNodeLayout<TNodePayload>> Process(IReadOnlyCollection<IGraphNodeLayout<TNodePayload>> sourceLayouts);
+    public IReadOnlyCollection<IGraphNodeLayout<TNodePayload>> Process(
+        IReadOnlyCollection<IGraphNodeLayout<TNodePayload>> sourceLayouts);
 }

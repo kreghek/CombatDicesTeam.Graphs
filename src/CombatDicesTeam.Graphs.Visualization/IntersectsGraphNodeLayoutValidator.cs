@@ -8,13 +8,6 @@ namespace CombatDicesTeam.Graphs.Visualization;
 [PublicAPI]
 public sealed class IntersectsGraphNodeLayoutValidator<TNodePayload> : IGraphNodeLayoutValidator<TNodePayload>
 {
-    public bool Validate(IGraphNodeLayout<TNodePayload> layout, IReadOnlyCollection<IGraphNodeLayout<TNodePayload>> sourceLayouts)
-    {
-        var otherLayouts = sourceLayouts.Where(x => x.Node != layout.Node).ToArray();
-
-        return !Intersects(layout.Position, layout.Size, otherLayouts);
-    }
-
     private static bool Intersects(Position position, Size size, IGraphNodeLayout<TNodePayload>[] testedLayouts)
     {
         var x1 = position.X;
@@ -39,5 +32,13 @@ public sealed class IntersectsGraphNodeLayoutValidator<TNodePayload> : IGraphNod
         }
 
         return false;
+    }
+
+    public bool Validate(IGraphNodeLayout<TNodePayload> layout,
+        IReadOnlyCollection<IGraphNodeLayout<TNodePayload>> sourceLayouts)
+    {
+        var otherLayouts = sourceLayouts.Where(x => x.Node != layout.Node).ToArray();
+
+        return !Intersects(layout.Position, layout.Size, otherLayouts);
     }
 }
