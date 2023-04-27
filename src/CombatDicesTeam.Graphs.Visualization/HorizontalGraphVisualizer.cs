@@ -35,38 +35,42 @@ public sealed class HorizontalGraphVisualizer<TValueData> : IGraphNodeVisualizer
         return nodesOpenList;
     }
 
-    private static IEnumerable<IEnumerable<T>> GetPermutations<T>(IEnumerable<T> list, int length)
+    private static IEnumerable<IReadOnlyList<T>> GetPermutations<T>(IReadOnlyList<T> list, int length)
     {
         if (length == 1) return list.Select(t => new[] { t });
 
-        var materializedList = list as T[] ?? list.ToArray();
-        return GetPermutations(materializedList, length - 1)
-            .SelectMany(t => materializedList.Where(e => !t.Contains(e)),
-                (t1, t2) => t1.Concat(new[] { t2 }));
+        var permutationsMinus1 = GetPermutations(list, length - 1);
+        return permutationsMinus1
+            .SelectMany(t => list.Where(e => !t.Contains(e)),
+                (t1, t2) => t1.Concat(new[] { t2 }).ToArray());
     }
 
-    private (IReadOnlyList<IReadOnlyList<IGraphNode<TValueData>>>? TotalLevels, bool Success) CollectLevelInner(
+    private static IEnumerable<IReadOnlyList<T>> GetPermutations<T>(IReadOnlyList<T> list)
+    {
+        return GetPermutations(list, list.Count);
+    }
+
+    private static (IReadOnlyList<IReadOnlyList<IGraphNode<TValueData>>> TotalLevels, bool Success) CollectLevelInner(
         IGraph<TValueData> graph,
         IReadOnlyCollection<IGraphNode<TValueData>> stableCurrentLevelNodes,
         IReadOnlyList<IReadOnlyList<IGraphNode<TValueData>>> currentTotalLevels)
     {
 
-        var nextLevelNodes = GetNextLevelNodes(graph, stableCurrentLevelNodes);
+        var nextLevelNodes = GetNextLevelNodes(graph, stableCurrentLevelNodes).ToArray();
 
         if (!nextLevelNodes.Any())
         {
             return (currentTotalLevels, true);
         }
 
-        var nextLevelNodesPerms = GetPermutations(nextLevelNodes, nextLevelNodes.Count).ToArray();
+        var nextLevelNodesPerms = GetPermutations(nextLevelNodes);
 
         foreach (var nextLevelNodesPerm in nextLevelNodesPerms)
         {
-            var levelNodesPermMaterialized =
-                nextLevelNodesPerm as IGraphNode<TValueData>[] ?? nextLevelNodesPerm.ToArray();
-
-            var nextHaveSameOrder =
-                CheckNextLevelHaveSameOrder(graph, stableCurrentLevelNodes, levelNodesPermMaterialized);
+            var nextHaveSameOrder = CheckNextLevelHaveSameOrder(
+                graph,
+                stableCurrentLevelNodes,
+                nextLevelNodesPerm);
 
             if (!nextHaveSameOrder)
             {
@@ -77,35 +81,34 @@ public sealed class HorizontalGraphVisualizer<TValueData> : IGraphNodeVisualizer
 
             var totalList = new List<IReadOnlyList<IGraphNode<TValueData>>>(currentTotalLevels)
             {
-                levelNodesPermMaterialized
+                nextLevelNodesPerm
             };
-            var next = CollectLevelInner(graph, levelNodesPermMaterialized, totalList);
+            var (totalLevels, success) = CollectLevelInner(graph, nextLevelNodesPerm, totalList);
 
-            if (next.Success)
+            if (success)
             {
-                return (next.TotalLevels, true);
+                return (totalLevels, true);
             }
         }
 
-        return (null, false);
+        return (currentTotalLevels, false);
     }
 
-    private IReadOnlyList<IReadOnlyList<IGraphNode<TValueData>>> CollectLevels(IGraph<TValueData> graph,
-        IReadOnlyCollection<IGraphNode<TValueData>> rootNodes)
+    private static IReadOnlyList<IReadOnlyList<IGraphNode<TValueData>>> CollectLevels(IGraph<TValueData> graph,
+        IReadOnlyList<IGraphNode<TValueData>> rootNodes)
     {
-        var rootNodesPerms = GetPermutations(rootNodes, rootNodes.Count).ToArray();
+        var rootNodesPerms = GetPermutations(rootNodes, rootNodes.Count);
 
         foreach (var rootNodesPerm in rootNodesPerms)
         {
-            var rootNodesPermMaterialized = rootNodesPerm as IGraphNode<TValueData>[] ?? rootNodesPerm.ToArray();
             var totalList = new List<IReadOnlyList<IGraphNode<TValueData>>>
             {
-                rootNodesPermMaterialized.ToArray()
+                rootNodesPerm
             };
 
-            var (totalLevels, success) = CollectLevelInner(graph, rootNodesPermMaterialized.ToArray(), totalList);
+            var (totalLevels, success) = CollectLevelInner(graph, rootNodesPerm, totalList);
 
-            if (success && totalLevels is not null)
+            if (success)
             {
                 return totalLevels;
             }
@@ -145,18 +148,9 @@ public sealed class HorizontalGraphVisualizer<TValueData> : IGraphNodeVisualizer
         return weightedParentNodes.Where(x => graph.GetNext(x.Node).Contains(graphNode)).Average(x => x.Weight);
     }
 
-    /// <summary>
-    /// Check two collections are contain same elements without order.
-    /// </summary>
-    private static bool CheckCollectionsAreSame(IReadOnlyCollection<IGraphNode<TValueData>> list1,
-        IReadOnlyCollection<IGraphNode<TValueData>> list2)
-    {
-        return list1.Count == list2.Count && list1.All(list2.Contains);
-    }
-
     public IReadOnlyCollection<IGraphNodeLayout<TValueData>> Create(IGraph<TValueData> graph, ILayoutConfig config)
     {
-        var roots = GetRoots(graph);
+        var roots = GetRoots(graph).ToArray();
 
         var levels = CollectLevels(graph, roots);
 
