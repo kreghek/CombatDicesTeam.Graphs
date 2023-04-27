@@ -5,13 +5,10 @@
       "*Log",
       "Console.Write*",
       "*Exception.ctor",
-      "ToString",
-      "ConfigureAwait"
+      "ToString"
     ],
     "ignore-mutations": [
-      "string",
-      "linq.First",
-      "linq.Sum"
+      "string"
     ]
   }
 }
