@@ -37,7 +37,10 @@ public sealed class HorizontalGraphVisualizer<TValueData> : IGraphNodeVisualizer
 
     private static IEnumerable<IReadOnlyList<T>> GetPermutations<T>(IReadOnlyList<T> list, int length)
     {
-        if (length == 1) return list.Select(t => new[] { t });
+        if (length == 1)
+        {
+            return list.Select(t => new[] { t });
+        }
 
         var permutationsMinus1 = GetPermutations(list, length - 1);
         return permutationsMinus1

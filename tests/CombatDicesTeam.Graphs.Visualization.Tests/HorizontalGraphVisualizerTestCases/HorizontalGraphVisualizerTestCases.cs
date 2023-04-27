@@ -34,13 +34,16 @@ public static class HorizontalGraphVisualizerTestCases
         }
     }
     
-    private static IEnumerable<IEnumerable<T>> GetPermutations<T>(IEnumerable<T> list, int length)
+    private static IEnumerable<IReadOnlyList<T>> GetPermutations<T>(IReadOnlyList<T> list, int length)
     {
-        if (length == 1) return list.Select(t => new [] { t });
+        if (length == 1)
+        {
+            return list.Select(t => new[] { t });
+        }
 
-        var materializedList = list as T[] ?? list.ToArray();
-        return GetPermutations(materializedList, length - 1)
-            .SelectMany(t => materializedList.Where(e => !t.Contains(e)),
-                (t1, t2) => t1.Concat(new [] { t2 }));
+        var permutationsMinus1 = GetPermutations(list, length - 1);
+        return permutationsMinus1
+            .SelectMany(t => list.Where(e => !t.Contains(e)),
+                (t1, t2) => t1.Concat(new[] { t2 }).ToArray());
     }
 }
