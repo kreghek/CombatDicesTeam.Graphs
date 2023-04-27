@@ -6,7 +6,7 @@ public sealed class HorizontalGraphVisualizerSizeTests
     /// Test checks the visualizer layouts node between two related.
     /// </summary>
     [Test]
-    public void Create_ForkGraphAndSize2_ReturnsRootBetweenChildre()
+    public void Create_ForkGraphAndSize2_ReturnsRootBetweenChildren()
     {
         // ARRANGE
 
