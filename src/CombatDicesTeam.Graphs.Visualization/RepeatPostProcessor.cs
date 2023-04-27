@@ -1,5 +1,8 @@
-﻿namespace CombatDicesTeam.Graphs.Visualization;
+﻿using JetBrains.Annotations;
 
+namespace CombatDicesTeam.Graphs.Visualization;
+
+[PublicAPI]
 public sealed class RepeatPostProcessor<TNodePayload> : ILayoutPostProcessor<TNodePayload>
 {
     private readonly int _repeatCount;
