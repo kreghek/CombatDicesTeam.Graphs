@@ -18,7 +18,7 @@ public static class HorizontalGraphVisualizerTestCases
             }
         }
     }
-    
+
     public static IEnumerable NodePermsIsolated
     {
         get
@@ -33,7 +33,7 @@ public static class HorizontalGraphVisualizerTestCases
             }
         }
     }
-    
+
     private static IEnumerable<IReadOnlyList<T>> GetPermutations<T>(IReadOnlyList<T> list, int length)
     {
         if (length == 1)
