@@ -55,7 +55,6 @@ public sealed class HorizontalGraphVisualizer<TValueData> : IGraphNodeVisualizer
         IReadOnlyCollection<IGraphNode<TValueData>> stableCurrentLevelNodes,
         IReadOnlyList<IReadOnlyList<IGraphNode<TValueData>>> currentTotalLevels)
     {
-
         var nextLevelNodes = GetNextLevelNodes(graph, stableCurrentLevelNodes).ToArray();
 
         if (!nextLevelNodes.Any())
