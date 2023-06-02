@@ -19,7 +19,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\CombatDicesTeam.Graphs.Visualization\CombatDicesTeam.Graphs.Visualization.csproj" />
+      <ProjectReference Include="..\..\src\CombatDicesTeam.Graphs\CombatDicesTeam.Graphs.csproj" />
     </ItemGroup>
 
 </Project>

@@ -5,7 +5,7 @@ namespace CombatDicesTeam.Graphs;
 /// <summary>
 /// Base implementation of the graph node.
 /// </summary>
-/// <typeparam name="TValueData"></typeparam>
+/// <typeparam name="TValueData">Type of node data.</typeparam>
 [PublicAPI]
 public sealed class GraphNode<TValueData> : IGraphNode<TValueData>
 {
@@ -14,5 +14,6 @@ public sealed class GraphNode<TValueData> : IGraphNode<TValueData>
         Payload = data;
     }
 
+    /// <inheritdoc/>
     public TValueData Payload { get; }
 }
