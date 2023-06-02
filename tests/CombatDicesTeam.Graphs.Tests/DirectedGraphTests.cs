@@ -19,7 +19,7 @@ public class DirectedGraphTests
         for (var i = 0; i < SEQUENCE_LENGTH; i++)
         {
             var nodePayload = i;
-            var graphNode = Mock.Of<IGraphNode<int>>(x=>x.Payload == nodePayload);
+            var graphNode = Mock.Of<IGraphNode<int>>(x => x.Payload == nodePayload);
             nodeList.Add(graphNode);
         }
 
@@ -60,7 +60,8 @@ public class DirectedGraphTests
         rootNext.Should().HaveCount(1).And.Subject.Should().Satisfy(x => x == graphNodeNext);
     }
 
-    private static void CreateLinearGraph<TNodePayload>(DirectedGraph<TNodePayload> targetGraph, IReadOnlyList<IGraphNode<TNodePayload>> nodeSequence)
+    private static void CreateLinearGraph<TNodePayload>(DirectedGraph<TNodePayload> targetGraph,
+        IReadOnlyList<IGraphNode<TNodePayload>> nodeSequence)
     {
         IGraphNode<TNodePayload>? prevNode = null;
 
