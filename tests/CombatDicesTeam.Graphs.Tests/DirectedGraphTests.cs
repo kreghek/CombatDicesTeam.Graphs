@@ -18,7 +18,8 @@ public class DirectedGraphTests
         const int SEQUENCE_LENGTH = 3;
         for (var i = 0; i < SEQUENCE_LENGTH; i++)
         {
-            var graphNode = Mock.Of<IGraphNode<int>>(x=>x.Payload == i);
+            var nodePayload = i;
+            var graphNode = Mock.Of<IGraphNode<int>>(x=>x.Payload == nodePayload);
             nodeList.Add(graphNode);
         }
 
