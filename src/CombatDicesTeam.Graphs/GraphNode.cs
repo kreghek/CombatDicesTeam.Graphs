@@ -3,7 +3,7 @@ using JetBrains.Annotations;
 namespace CombatDicesTeam.Graphs;
 
 /// <summary>
-/// Base implementation of the graph node.
+/// Simple implementation of the graph node.
 /// </summary>
 /// <typeparam name="TValueData">Type of node data.</typeparam>
 [PublicAPI]

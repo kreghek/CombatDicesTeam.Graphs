@@ -9,7 +9,7 @@ using CombatDicesTeam.Graphs;
 
 // 1. Create a instance of the graph using one of implementations. You can create base graph from out-of-box.
 
-var graph = new Graph<int>(); // the graph of integers.
+var graph = new DirectedGraph<int>(); // the graph of integers.
 
 // 2. Create multiple nodes.
 
@@ -24,6 +24,14 @@ graph.AddNode(endNode);
 graph.ConnectNodes(startNode, endNode);
 
 ```
+
+## Motivation
+
+The library was made for the indie game devs, so as not to pull monstrous enterprise solutions for working with graphs into small pet-games.
+
+## Authors and acknowledgment
+
+- [KregHEk](https://github.com/kreghek)
 
 ## Contributing
 
