@@ -1,5 +1,9 @@
 # CombatDicesTeam.Graphs
 
+[![Maintainability](https://api.codeclimate.com/v1/badges/a45b998de638640f1774/maintainability)](https://codeclimate.com/github/kreghek/CombatDicesTeam.Graphs/maintainability)
+[![CodeFactor](https://www.codefactor.io/repository/github/kreghek/combatdicesteam.graphs/badge)](https://www.codefactor.io/repository/github/kreghek/combatdicesteam.graphs)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/f76dcd9be48548edaa4a28e5f59fc1ef)](https://app.codacy.com/gh/kreghek/CombatDicesTeam.Graphs/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
+
 The simplest library to work with graph.
 
 ## Usage
@@ -23,7 +27,6 @@ graph.AddNode(endNode);
 // 3. Connect nodes.
 
 graph.ConnectNodes(startNode, endNode);
-
 ```
 
 ## Motivation
@@ -32,7 +35,7 @@ The library was made for the indie game devs, so as not to pull monstrous enterp
 
 ## Authors and acknowledgment
 
-*  [KregHEk](https://github.com/kreghek)
+*    [KregHEk](https://github.com/kreghek)
 
 ## Contributing
 
