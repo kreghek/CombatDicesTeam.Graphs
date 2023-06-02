@@ -24,3 +24,11 @@ graph.AddNode(endNode);
 graph.ConnectNodes(startNode, endNode);
 
 ```
+
+## Contributing
+
+Feel free to contribute into the project.
+
+## License
+
+You can use it in your free open-source and commercial projects with a link to this repository.
