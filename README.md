@@ -7,7 +7,8 @@ The simplest library to work with graph.
 ```c#
 using CombatDicesTeam.Graphs;
 
-// 1. Create a instance of the graph using one of implementations. You can create base graph from out-of-box.
+// 1. Create a instance of the graph using one of implementations.
+// You can create directed graph from out-of-box.
 
 var graph = new DirectedGraph<int>(); // the graph of integers.
 
