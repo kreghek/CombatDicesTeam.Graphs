@@ -5,7 +5,7 @@ namespace CombatDicesTeam.Graphs;
 /// <summary>
 /// Base implementation of the graph.
 /// </summary>
-/// <typeparam name="TNodePayload"></typeparam>
+/// <typeparam name="TNodePayload">Type of node data.</typeparam>
 [PublicAPI]
 public sealed class Graph<TNodePayload> : IGraph<TNodePayload>
 {
