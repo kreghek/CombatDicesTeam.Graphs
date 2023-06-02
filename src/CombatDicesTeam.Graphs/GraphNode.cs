@@ -14,6 +14,6 @@ public sealed class GraphNode<TValueData> : IGraphNode<TValueData>
         Payload = data;
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public TValueData Payload { get; }
 }
