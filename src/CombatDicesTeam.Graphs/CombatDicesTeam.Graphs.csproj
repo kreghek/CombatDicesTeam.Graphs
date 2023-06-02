@@ -23,7 +23,7 @@
 
     <PropertyGroup>
         <Authors>Pavel Kurkutov</Authors>
-        <Description>Lightweight library with graphs.</Description>
+        <Description>Lightweight library with graphs for indie game devs.</Description>
 
         <!-- PackageProjectUrl is different from the repository URL. It can be a documentation
              website or a website explaining the project -->
