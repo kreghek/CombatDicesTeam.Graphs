@@ -32,7 +32,7 @@ The library was made for the indie game devs, so as not to pull monstrous enterp
 
 ## Authors and acknowledgment
 
-  * [KregHEk](https://github.com/kreghek)
+*  [KregHEk](https://github.com/kreghek)
 
 ## Contributing
 
